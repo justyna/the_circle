@@ -1,5 +1,6 @@
 package com.circle;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 public class MeasurementEndpoint {
     private final MeasurementRepository measurementRepository;
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(MeasurementEndpoint.class);
 
     @Autowired
     public MeasurementEndpoint(MeasurementRepository measurementRepository) {
@@ -24,7 +26,10 @@ public class MeasurementEndpoint {
 
     @RequestMapping(value = "/measurements", method = RequestMethod.GET)
     public List<Measurement> getMeasurements() throws InterruptedException {
-        return measurementRepository.getMeasurements();
+        long start = System.currentTimeMillis();
+        final List<Measurement> measurements = measurementRepository.getMeasurements();
+        logger.info("getMeasurements - {}", (System.currentTimeMillis() - start));
+        return measurements;
     }
 
     @RequestMapping(value = "/measurements/{id}", method = RequestMethod.GET)
