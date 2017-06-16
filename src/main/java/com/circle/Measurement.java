@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by ThinkPad on 13.06.2017.
  */
+
 public class Measurement {
     private final Integer id;
     private final Integer userId;

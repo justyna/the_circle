@@ -1,11 +1,11 @@
 package com.circle;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * Created by ThinkPad on 13.06.2017.
  */
 
-@Controller
+@RestController
 public class MeasurementEndpoint {
     private final MeasurementRepository measurementRepository;
 
@@ -22,19 +22,19 @@ public class MeasurementEndpoint {
         this.measurementRepository = measurementRepository;
     }
 
-    @RequestMapping("/measurements")
+    @RequestMapping(value = "/measurements", method = RequestMethod.GET)
     public List<Measurement> getMeasurements() throws InterruptedException {
         return measurementRepository.getMeasurements();
     }
 
-    @RequestMapping("/measurements/{id}")
+    @RequestMapping(value = "/measurements/{id}", method = RequestMethod.GET)
     public Measurement getUser(@PathVariable(name = "id") Integer id) {
-        return measurementRepository.getMeasurement(id);
+         return measurementRepository.getMeasurement(id);
     }
 
 
-    @RequestMapping(value = "/measurements", method = RequestMethod.POST,
-            consumes = "application/json; charset=UTF-8", produces = "application/json; charset=UTF-8")
+    @RequestMapping(value = "/measurement", method = RequestMethod.POST,
+            consumes = "application/json", produces = "application/json")
     public List<Measurement> add(@RequestBody Measurement measurement) {
         return measurementRepository.addMeasurement(measurement);
     }

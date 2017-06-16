@@ -13,17 +13,17 @@ import java.util.Random;
 @Service
 public class MeasurementRepository {
 
-    List<Measurement> measurements = new ArrayList<>();
+    private List<Measurement> measurements = new ArrayList<>();
 
     public MeasurementRepository() {
-        this.measurements.add(new Measurement(1, 101, 36.6, 80.7, 100.00));
-        this.measurements.add(new Measurement(2, 102, 38.7, 101.7, 90.00));
-        this.measurements.add(new Measurement(3, 101, 40.6, 80.7, 100.00));
-        this.measurements.add(new Measurement(4, 102, 38.6, 89.7, 150.00));
-        this.measurements.add(new Measurement(5, 101, 41.6, 80.7, 100.00));
-        this.measurements.add(new Measurement(6, 103, 38.7, 101.7, 90.00));
-        this.measurements.add(new Measurement(7, 104, 40.6, 80.7, 100.00));
-        this.measurements.add(new Measurement(8, 105, 38.6, 89.7, 150.00));
+        this.measurements.add(new Measurement(0, 101, 36.6, 80.7, 100.00));
+        this.measurements.add(new Measurement(1, 102, 38.7, 101.7, 90.00));
+        this.measurements.add(new Measurement(2, 101, 40.6, 80.7, 100.00));
+        this.measurements.add(new Measurement(3, 102, 38.6, 89.7, 150.00));
+        this.measurements.add(new Measurement(4, 101, 41.6, 80.7, 100.00));
+        this.measurements.add(new Measurement(5, 103, 38.7, 101.7, 90.00));
+        this.measurements.add(new Measurement(6, 104, 40.6, 80.7, 100.00));
+        this.measurements.add(new Measurement(7, 105, 38.6, 89.7, 150.00));
     }
 
     List<Measurement> getMeasurements() throws InterruptedException {
@@ -34,7 +34,11 @@ public class MeasurementRepository {
     }
 
     Measurement getMeasurement(Integer id) {
-        return measurements.get(id);
+        return measurements
+                .stream()
+                .filter( m -> m.getId().equals(id))
+                .findFirst()
+                .orElse(new Measurement(null, null, null, null, null));
     }
 
     List<Measurement> addMeasurement(Measurement measurement) {
