@@ -2,6 +2,7 @@ package com.circle;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import com.codahale.metrics.annotation.Timed;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,37 +32,23 @@ public class MeasurementEndpoint {
     }
 
     @RequestMapping(value = "/measurements", method = RequestMethod.GET)
+    @Timed(name = "list")
     public List<Measurement> getMeasurements() throws InterruptedException {
-        Timer responses = metrics.timer(name(MeasurementEndpoint.class, "responses.list"));
-        final Timer.Context context = responses.time();
-        try {
-            return measurementRepository.getMeasurements();
-        } finally {
-            context.stop();
-        }
+        return measurementRepository.getMeasurements();
     }
 
     @RequestMapping(value = "/measurements/{id}", method = RequestMethod.GET)
+    @Timed(name = "get")
     public Measurement getMeasurement(@PathVariable(name = "id") Integer id) {
-        Timer responses = metrics.timer(name(MeasurementEndpoint.class, "responses.get"));
-        final Timer.Context context = responses.time();
-        try {
-            return measurementRepository.getMeasurement(id);
-        } finally {
-            context.stop();
-        }
+        return measurementRepository.getMeasurement(id);
+
     }
 
 
     @RequestMapping(value = "/measurement", method = RequestMethod.POST,
             consumes = "application/json", produces = "application/json")
+    @Timed(name = "add")
     public List<Measurement> add(@RequestBody Measurement measurement) {
-        Timer responses = metrics.timer(name(MeasurementEndpoint.class, "responses.add"));
-        final Timer.Context context = responses.time();
-        try {
-            return measurementRepository.addMeasurement(measurement);
-        } finally {
-            context.stop();
-        }
+        return measurementRepository.addMeasurement(measurement);
     }
 }
