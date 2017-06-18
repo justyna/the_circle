@@ -23,18 +23,16 @@ public class MeasurementEndpoint {
     private final MeasurementRepository measurementRepository;
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(MeasurementEndpoint.class);
     private final MetricRegistry metrics;
-    private Timer responses;
 
     @Autowired
     public MeasurementEndpoint(MeasurementRepository measurementRepository, MetricRegistry metrics) {
         this.measurementRepository = measurementRepository;
         this.metrics = metrics;
-        this.responses =  metrics.timer(name(MeasurementEndpoint.class, "responses"));
-
     }
 
     @RequestMapping(value = "/measurements", method = RequestMethod.GET)
     public List<Measurement> getMeasurements() throws InterruptedException {
+        Timer responses = metrics.timer(name(MeasurementEndpoint.class, "responses.list"));
         final Timer.Context context = responses.time();
         try {
             return measurementRepository.getMeasurements();
@@ -44,14 +42,26 @@ public class MeasurementEndpoint {
     }
 
     @RequestMapping(value = "/measurements/{id}", method = RequestMethod.GET)
-    public Measurement getUser(@PathVariable(name = "id") Integer id) {
-         return measurementRepository.getMeasurement(id);
+    public Measurement getMeasurement(@PathVariable(name = "id") Integer id) {
+        Timer responses = metrics.timer(name(MeasurementEndpoint.class, "responses.get"));
+        final Timer.Context context = responses.time();
+        try {
+            return measurementRepository.getMeasurement(id);
+        } finally {
+            context.stop();
+        }
     }
 
 
     @RequestMapping(value = "/measurement", method = RequestMethod.POST,
             consumes = "application/json", produces = "application/json")
     public List<Measurement> add(@RequestBody Measurement measurement) {
-        return measurementRepository.addMeasurement(measurement);
+        Timer responses = metrics.timer(name(MeasurementEndpoint.class, "responses.add"));
+        final Timer.Context context = responses.time();
+        try {
+            return measurementRepository.addMeasurement(measurement);
+        } finally {
+            context.stop();
+        }
     }
 }
